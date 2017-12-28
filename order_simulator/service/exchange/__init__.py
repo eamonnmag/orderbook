@@ -1,4 +1,4 @@
-from service.orderbook import AbstractOrderBook
+from order_simulator.service.orderbook import AbstractOrderBook
 
 
 class ExchangeService(object):

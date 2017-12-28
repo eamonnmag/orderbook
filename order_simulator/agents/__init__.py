@@ -2,6 +2,10 @@ import abc
 from enum import Enum
 
 class AbstractAgent(object):
+
+    def __init__(self, *args, **kwargs):
+        self.client_id = kwargs.get('client_id')
+
     @abc.abstractmethod
     def place_order(self):
         """
