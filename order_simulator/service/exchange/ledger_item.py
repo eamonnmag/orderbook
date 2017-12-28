@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class LedgerItem(object):
     def __init__(self, *args, **kwargs):
         self.order_id = kwargs.get('order_id')
@@ -5,7 +7,7 @@ class LedgerItem(object):
         self.quantity = int(kwargs.get('quantity'))
         self.side = kwargs.get('side')
         self.price = float(kwargs.get('price'))
-        self.timestamp = kwargs.get('timestamp')
+        self.timestamp = kwargs.get('timestamp', datetime.now())
         self.security = kwargs.get('security')
 
 
