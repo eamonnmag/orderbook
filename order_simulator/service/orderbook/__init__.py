@@ -56,14 +56,40 @@ class AbstractOrderBook(object):
         :return:
         """
 
+    @abc.abstractmethod
     def getMinPrice(self):
         """
 
         :return:
         """
 
+    @abc.abstractmethod
     def getMaxPrice(self):
         """
 
+        :return:
+        """
+
+    @abc.abstractmethod
+    def getQuantity(self, price):
+        """
+
+        :param price:
+        :return:
+        """
+
+    @abc.abstractmethod
+    def getQuantity(self, price):
+        """
+
+        :param price:
+        :return:
+        """
+
+    @abc.abstractmethod
+    def getNbOrders(self, price):
+        """
+
+        :param price:
         :return:
         """

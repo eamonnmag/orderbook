@@ -3,13 +3,16 @@ from order_simulator.service.orderbook import AbstractOrderBook
 
 
 class OrderBook(AbstractOrderBook):
+
     def __init__(self):
         self.orderMapPrice = {}
         self.orderMapId = {}
 
+
     def clear(self):
         self.orderMapPrice = {}
         self.orderMapId = {}
+
 
     def add(self, orderid, timestamp, price, quantity):
 
@@ -30,7 +33,9 @@ class OrderBook(AbstractOrderBook):
 
         self.orderMapPrice[price][orderid] = order
 
+
         return True
+
 
     def update(self, orderid, timestamp, price, quantity):
         if orderid not in self.orderMapId:
@@ -46,6 +51,7 @@ class OrderBook(AbstractOrderBook):
         self.delete(orderid)
         self.add(orderid, timestamp, price, quantity)
 
+
         # old_price = self.orderMapId[orderid]['price']
         #
         # if price != old_price:
@@ -55,6 +61,7 @@ class OrderBook(AbstractOrderBook):
         # self.orderMapId[orderid] = order
 
         return True
+
 
     def delete(self, orderid):
         if orderid not in self.orderMapId:
@@ -67,6 +74,7 @@ class OrderBook(AbstractOrderBook):
             self.orderMapPrice.pop(order['price'], None)
 
         return True
+
 
     def getMinPrice(self):
         if self.orderMapPrice:
@@ -86,4 +94,20 @@ class OrderBook(AbstractOrderBook):
     def getOrderbookById(self):
         return self.orderMapId
 
-# cumulative quantity per price, number of order per price
+
+    def getQuantity(self, price):
+        if price not in self.orderMapPrice:
+            return 0
+
+        quantity = 0
+        for order in self.orderMapPrice[price]:
+            quantity += self.orderMapPrice[price][order]['quantity']
+
+        return quantity
+
+
+    def getNbOrders(self, price):
+        if price not in self.orderMapPrice:
+            return 0
+
+        return len(self.orderMapPrice[price])
