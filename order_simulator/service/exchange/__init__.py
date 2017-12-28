@@ -39,6 +39,11 @@ class ExchangeService(object):
         :return:
         """
         if exchange_name in self.exchanges:
+            agent.notify(Event(
+                event_type=EventType.SUCCESSFUL_REGISTRATION,
+                payload={'stock_reference': self}
+            ))
+
             self.exchanges[exchange_name].register_agent(agent)
             return True
 
