@@ -134,11 +134,10 @@ class Exchange(object):
         :param item: TransactionItem
         :return:
         """
-
         if transaction:
-            if transaction not in self.transactions:
-                self.transactions.append(transaction)
-                return True
+            print('Adding transaction...')
+            self.transactions.append(transaction)
+            return True
 
         return False
 
@@ -189,11 +188,13 @@ class Exchange(object):
             # This happens when we the extremes of our triangles touch.
             # So we have a low ask and a high bid.
 
-            if seller and buyer and (seller.get('price') == buyer.get('price')):
+            if seller and buyer:
 
                 sale_quantity = buyer.get('quantity')
                 if seller.get('quantity') < buyer.get('quantity'):
                     sale_quantity = seller.get('quantity')
+
+                print('Selling at {}'.format(sale_quantity))
 
                 # Update Seller Quantity
                 self.books[Side.SELL].updateQuantity(seller.get('id'), seller.get('quantity') - sale_quantity)
@@ -202,14 +203,8 @@ class Exchange(object):
                                                    price=buyer.get('price'))
 
                 # Update Buyer Quantity
+                print(transaction_item)
                 self.add_transaction(transaction_item)
-
-                event = Event(event_type=EventType.NEW_BUY_STATE_FOR_ONE_PRICE,
-                              payload={'price': buyer.get('price'),
-                                       'side': 'buy',
-                                       'quantity': sale_quantity})
-                self.notify_agents(event)
-
 
                 # timestamp, transaction_id, price, quantity
                 event = Event(event_type=EventType.TRANSACTION_DONE,
