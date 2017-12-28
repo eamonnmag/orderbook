@@ -4,7 +4,7 @@ class LedgerItem(object):
 
     def __init__(self, *args, **kwargs):
 
-        self.id = kwargs.get('id')
+        self.order_id = kwargs.get('order_id')
         self.item_type = kwargs.get('item_type')
         self.client_id = int(kwargs.get('client_id'))
         self.volume = int(kwargs.get('volume'))
