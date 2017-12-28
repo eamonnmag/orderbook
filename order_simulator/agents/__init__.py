@@ -7,8 +7,12 @@ class AbstractAgent(object):
         self.client_id = kwargs.get('client_id')
 
     @abc.abstractmethod
-    def place_order(self):
+    def place_order(self, exchange, side, volume, price):
         """
+        @param: exchange - string to an exchange market
+        @param: side - buy|sell
+        @param: volume - quantity to buy/sell
+        @param: price
         :return: will place an order on the system
         """
         pass

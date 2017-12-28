@@ -1,6 +1,7 @@
 from order_simulator.agents import Event, EventType
-from order_simulator.service.exchange.ledger_item import TransactionItem
+from order_simulator.service.exchange.ledger_item import TransactionItem, OrderItem
 from order_simulator.service.orderbook import AbstractOrderBook
+from datetime import datetime
 from enum import Enum
 
 class Side(Enum):
@@ -39,12 +40,15 @@ class ExchangeService(object):
 
         return False
 
-    def place_order(self, exchange_name, order_item):
+    def place_order(self, client_id, exchange_name, side, volume, price):
         """
-
+        :param exchange_name:
+        :param side:
+        :param volume:
+        :param price:
         :return:
         """
-        self.exchanges[exchange_name].place_order(order_item)
+        return self.exchanges[exchange_name].place_order(client_id, volume, price, side)
 
     def get_orders(self, exchange_name):
         """
@@ -136,16 +140,29 @@ class Exchange(object):
     def get_transactions(self):
         return self.transactions
 
-    def place_order(self, order_item):
+    def place_order(self, client_id, volume, price, side):
         """
 
-        :param order_item:
+        :param volume: quantity
+        :param price
+        :param side
         :return:
         """
 
-        self.add_order(order_item)
+        order_item = OrderItem(
+            order_id=len(self.orders), # TODO
+            client_id=client_id, # TODO
+            volume=volume,
+            side=side,
+            price=price,
+            timestamp=datetime.now(),
+            security=self.name
+        )
 
+        self.add_order(order_item)
         self.execute_order(order_item)
+
+        return order_item
 
     def execute_order(self, order_item):
         """

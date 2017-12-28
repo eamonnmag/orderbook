@@ -2,6 +2,7 @@ from datetime import datetime
 
 from order_simulator.agents import Event
 from order_simulator.agents.basic_agent import BasicAgent
+from order_simulator.service.exchange import Side
 from order_simulator.service.exchange.ledger_item import LedgerItem, OrderItem
 
 
@@ -31,10 +32,12 @@ def test_add_to_ledger(exchange_service):
 
     :return:
     """
-    item = OrderItem(order_id=1, client_id=1, volume=25, side='sell', price=10.2,
-                     timestamp=datetime.now(), security='AAPL')
 
-    exchange_service.place_order('AAPL', item)
+    exchange_service.place_order(client_id=1,
+                                 exchange_name="APPL",
+                                 side=Side.SELL,
+                                 volume=25,
+                                 price=10.2)
 
     assert (len(exchange_service.get_orders('AAPL')) == 1)
 
