@@ -7,6 +7,15 @@ class AbstractOrderBook(object):
     """
 
     @abc.abstractmethod
+    def clear(self, *args, **kwargs):
+        """
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+
+    @abc.abstractmethod
     def add(self, *args, **kwargs):
         """
 
@@ -34,9 +43,27 @@ class AbstractOrderBook(object):
         """
 
     @abc.abstractmethod
-    def get_by_id(self, id):
+    def getOrderbookByPrice(self):
         """
 
-        :param id:
+        :return:
+        """
+
+    @abc.abstractmethod
+    def getOrderbookById(self):
+        """
+
+        :return:
+        """
+
+    def getMinPrice(self):
+        """
+
+        :return:
+        """
+
+    def getMaxPrice(self):
+        """
+
         :return:
         """
