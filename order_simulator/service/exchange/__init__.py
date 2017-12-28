@@ -185,13 +185,10 @@ class Exchange(object):
         # So we have a low ask and a high bid.
 
         if len(self.books[Side.BUY].orderMapPrice) > 0 and len(self.books[Side.SELL].orderMapPrice) > 0:
-            available_buyers = self.books[Side.BUY].getOrdersByPrice()[maxBuyPrice]
-            available_sellers = self.books[Side.SELL].getOrdersByPrice()[minSellPrice]
+            available_buyers = self.books[Side.BUY].orderMapPrice[maxBuyPrice]
+            available_sellers = self.books[Side.SELL].orderMapPrice[minSellPrice]
 
-            print(available_sellers)
-            print(available_buyers)
             for buy_order_id in available_buyers:
-                print(buy_order_id)
                 buyer_obj = available_buyers[buy_order_id]
 
                 for sell_order_id in available_sellers:
