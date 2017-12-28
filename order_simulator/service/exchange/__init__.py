@@ -181,8 +181,8 @@ class Exchange(object):
         """
 
         while True:
-            seller = self.books[Side.SELL].peek_from_max()
-            buyer = self.books[Side.BUY].peek_from_min()
+            seller = self.books[Side.SELL].peek_from_min()
+            buyer = self.books[Side.BUY].peek_from_max()
 
             # First we check if there is a match
             # This happens when we the extremes of our triangles touch.
@@ -194,7 +194,7 @@ class Exchange(object):
                 if seller.get('quantity') < buyer.get('quantity'):
                     sale_quantity = seller.get('quantity')
 
-                print('Selling at {}'.format(sale_quantity))
+                print('Selling {0} at {1}'.format(sale_quantity, seller.get('price')))
 
                 # Update Seller Quantity
                 self.books[Side.SELL].updateQuantity(seller.get('id'), seller.get('quantity') - sale_quantity)
