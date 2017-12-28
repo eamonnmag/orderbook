@@ -41,7 +41,10 @@ class OrderBook(AbstractOrderBook):
         if orderid not in self.orderMapId:
             return False
 
-        self.orderMapId[orderid]['quantity'] = quantity
+        if quantity <= 0:
+            self.delete(orderid)
+        else:
+            self.orderMapId[orderid]['quantity'] = quantity
 
         return True
 
