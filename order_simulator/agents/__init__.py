@@ -24,15 +24,15 @@ class AbstractAgent(object):
 
 class EventType(Enum):
     # TransactionDone(timestamp, transaction_id, price, quantity)
-    TRANSACTION_DONE = auto()
+    TRANSACTION_DONE = 1
     # Closing
-    CLOSING = auto()
+    CLOSING = 2
     # NewAskStateForOnePrice(timestamp, price, count, sum)
-    NEW_ASK_STATE_FOR_ONE_PRICE = auto()
+    NEW_ASK_STATE_FOR_ONE_PRICE = 3
     # NewBidStateForOnePrice(timestamp, price, count, sum)
-    NEW_BIN_STATE_FOR_ONE_PRICE = auto()
+    NEW_BIN_STATE_FOR_ONE_PRICE = 4
     # Opening
-    OPENING = auto()
+    OPENING = 4
 
 
 class Event(object):
