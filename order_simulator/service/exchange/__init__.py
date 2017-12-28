@@ -1,7 +1,11 @@
 from order_simulator.agents import Event, EventType
 from order_simulator.service.exchange.ledger_item import TransactionItem
 from order_simulator.service.orderbook import AbstractOrderBook
+from enum import Enum
 
+class Side(Enum):
+    BUY = 1
+    SELL = 2
 
 class ExchangeService(object):
     """
