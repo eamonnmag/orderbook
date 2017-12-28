@@ -32,7 +32,12 @@ class EventType(Enum):
     # NewBidStateForOnePrice(timestamp, price, count, sum)
     NEW_BIN_STATE_FOR_ONE_PRICE = 4
     # Opening
-    OPENING = 4
+    OPENING = 5
+    # SuccessfulRegistration(stock_reference)
+    SUCCESSFUL_REGISTRATION = 6
+    # Execution(execution_id, price, quantity)
+    EXECUTION = 7
+    # OrderAcknowledgment(order_id, price, quantity)
 
 
 class Event(object):
