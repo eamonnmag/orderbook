@@ -1,6 +1,4 @@
-from heapq import heappush, heappop
 from order_simulator.service.orderbook import AbstractOrderBook
-
 
 class OrderBook(AbstractOrderBook):
     def __init__(self):

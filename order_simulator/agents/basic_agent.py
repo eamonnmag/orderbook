@@ -5,6 +5,8 @@ class BasicAgent(AbstractAgent):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.exchange = None
+
     def place_order(self, exchange, volume, price, side):
         super().place_order(exchange, volume, price, side)
 

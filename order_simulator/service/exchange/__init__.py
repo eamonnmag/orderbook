@@ -45,7 +45,7 @@ class ExchangeService(object):
             ))
 
             self.exchanges[exchange_name].register_agent(agent)
-            return True
+            return self.exchanges[exchange_name]
 
         return False
 
