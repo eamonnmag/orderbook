@@ -48,3 +48,6 @@ class ExchangeService(object):
             return True
 
         return False
+
+    def get_ledger(self):
+        return self.ledger
