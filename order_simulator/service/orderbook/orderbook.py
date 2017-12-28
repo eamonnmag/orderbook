@@ -87,7 +87,8 @@ class OrderBook(AbstractOrderBook):
         if max == 0:
             return None
 
-        return self.orderMapPrice[max].pop(1)
+        orderid = self.orderMapPrice[max].pop(1)
+        return self.orderMapId.pop(orderid, None)
 
 
     def peek_from_max(self):
@@ -95,7 +96,8 @@ class OrderBook(AbstractOrderBook):
         if max == 0:
             return None
 
-        return self.orderMapPrice[max][0]
+        orderid = self.orderMapPrice[max][0]
+        return self.orderMapId[orderid]
 
 
     def pop_from_min(self):
@@ -103,7 +105,8 @@ class OrderBook(AbstractOrderBook):
         if min == 0:
             return None
 
-        return self.orderMapPrice[min].pop(1)
+        orderid = self.orderMapPrice[min].pop(1)
+        return self.orderMapId.pop(orderid, None)
 
 
     def peek_from_min(self):
@@ -111,7 +114,8 @@ class OrderBook(AbstractOrderBook):
         if min == 0:
             return None
 
-        return self.orderMapPrice[min][0]
+        orderid = self.orderMapPrice[min][0]
+        return self.orderMapId[orderid]
 
 
     def getOrdersByPrice(self):
