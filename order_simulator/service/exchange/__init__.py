@@ -98,7 +98,7 @@ class Exchange(object):
 
         self.agents = []
 
-        self.orders = []
+        self.orders = {}
         self.transactions = []
 
         self.books = {Side.BUY: OrderBook(), Side.SELL: OrderBook()}
@@ -121,10 +121,9 @@ class Exchange(object):
         :param item: OrderItem
         :return:
         """
-
         if order:
-            if order not in self.orders:
-                self.orders.append(order)
+            if order.order_id not in self.orders:
+                self.orders[order.order_id] = order
                 return True
 
         return False
@@ -144,7 +143,7 @@ class Exchange(object):
         return False
 
     def get_orders(self):
-        return self.orders
+        return list(self.orders.values())
 
     def get_transactions(self):
         return self.transactions
@@ -159,8 +158,8 @@ class Exchange(object):
         """
 
         order_item = OrderItem(
-            order_id=len(self.orders),  # TODO
-            client_id=client_id,  # TODO
+            order_id=len(self.orders),
+            client_id=client_id,
             quantity=quantity,
             side=side,
             price=price,
@@ -190,7 +189,8 @@ class Exchange(object):
             # This happens when we the extremes of our triangles touch.
             # So we have a low ask and a high bid.
 
-            if seller and buyer:
+            if seller and buyer and (seller.get('price') == buyer.get('price')):
+
                 sale_quantity = buyer.get('quantity')
                 if seller.get('quantity') < buyer.get('quantity'):
                     sale_quantity = seller.get('quantity')

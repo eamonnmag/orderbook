@@ -54,4 +54,8 @@ def test_place_order(exchange_service):
 
     assert (len(exchange_service.get_orders('AAPL')) == 3)
 
+    omap = exchange_service.get_exchange('AAPL').books[Side.SELL].orderMapId
+    for trans in omap:
+        print(omap[trans])
+
 

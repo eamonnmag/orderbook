@@ -10,6 +10,9 @@ class OrderItem(object):
         self.timestamp = kwargs.get('timestamp', datetime.now())
         self.security = kwargs.get('security')
 
+    def as_dict(self):
+        return self.__dict__
+
 
 class TransactionItem(object):
     def __init__(self, *args, **kwargs):
