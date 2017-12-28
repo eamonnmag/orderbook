@@ -34,6 +34,15 @@ class AbstractOrderBook(object):
         """
 
     @abc.abstractmethod
+    def updateQuantity(self, *args, **kwargs):
+        """
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+
+    @abc.abstractmethod
     def delete(self, *args, **kwargs):
         """
 
@@ -43,14 +52,14 @@ class AbstractOrderBook(object):
         """
 
     @abc.abstractmethod
-    def getOrderbookByPrice(self):
+    def getOrdersByPrice(self):
         """
 
         :return:
         """
 
     @abc.abstractmethod
-    def getOrderbookById(self):
+    def getOrdersById(self):
         """
 
         :return:
@@ -71,10 +80,30 @@ class AbstractOrderBook(object):
         """
 
     @abc.abstractmethod
-    def getQuantity(self, price):
+    def pop_from_max(self):
         """
 
-        :param price:
+        :return:
+        """
+
+    @abc.abstractmethod
+    def peek_from_max(self):
+        """
+
+        :return:
+        """
+
+    @abc.abstractmethod
+    def pop_from_min(self):
+        """
+
+        :return:
+        """
+
+    @abc.abstractmethod
+    def peek_from_min(self):
+        """
+
         :return:
         """
 
