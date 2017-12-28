@@ -32,30 +32,47 @@ def test_place_order(exchange_service):
     :return:
     """
 
-    exchange_service.place_order(client_id='basic_agent',
-                                 exchange_name="AAPL",
-                                 side=Side.SELL,
-                                 quantity=25,
-                                 price=10.2)
+    sell_order_1 = exchange_service.place_order(client_id='basic_agent',
+                                                exchange_name="AAPL",
+                                                side=Side.SELL,
+                                                quantity=25,
+                                                price=10.2)
 
-    exchange_service.place_order(client_id='basic_agent',
-                                 exchange_name="AAPL",
-                                 side=Side.SELL,
-                                 quantity=25,
-                                 price=10.5)
+    sell_order_2 = exchange_service.place_order(client_id='basic_agent',
+                                                exchange_name="AAPL",
+                                                side=Side.SELL,
+                                                quantity=25,
+                                                price=10.5)
 
     assert (len(exchange_service.get_orders('AAPL')) == 2)
 
-    exchange_service.place_order(client_id='basic_agent',
-                                 exchange_name="AAPL",
-                                 side=Side.BUY,
-                                 quantity=15,
-                                 price=10.2)
+    buy_order_3 = exchange_service.place_order(client_id='basic_agent',
+                                               exchange_name="AAPL",
+                                               side=Side.BUY,
+                                               quantity=15,
+                                               price=10.2)
 
     assert (len(exchange_service.get_orders('AAPL')) == 3)
 
-    omap = exchange_service.get_exchange('AAPL').books[Side.SELL].orderMapId
-    for trans in omap:
-        print(omap[trans])
+    buy_orders = exchange_service.get_exchange('AAPL').books[Side.BUY].orderMapId
+    sell_orders = exchange_service.get_exchange('AAPL').books[Side.SELL].orderMapId
+    assert (len(sell_orders) == 2)
 
+    buy_order_4 = exchange_service.place_order(client_id='basic_agent',
+                                               exchange_name="AAPL",
+                                               side=Side.BUY,
+                                               quantity=15,
+                                               price=10.2)
 
+    sell_orders = exchange_service.get_exchange('AAPL').books[Side.SELL].orderMapId
+    assert (len(sell_orders) == 1)
+
+    assert (sell_orders[sell_order_2.order_id].get('quantity') == 20)
+
+    buy_order_5 = exchange_service.place_order(client_id='basic_agent',
+                                               exchange_name="AAPL",
+                                               side=Side.BUY,
+                                               quantity=15,
+                                               price=10.2)
+
+    assert (sell_orders[sell_order_2.order_id].get('quantity') == 5)

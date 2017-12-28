@@ -26,6 +26,8 @@ class BuyAndSellOneValueLessThanLastExecution(AbstractAgent):
         data = event.get_payload()
         event_type = event.get_event_type()
 
+        print((event_type, data, self.order_ids_sent))
+
         if event_type == EventType.SUCCESSFUL_REGISTRATION:
             self.exchange = data["stock_reference"]
         if event_type == EventType.TRANSACTION_DONE:
@@ -37,12 +39,15 @@ class BuyAndSellOneValueLessThanLastExecution(AbstractAgent):
             price = data["price"]
             quantity = data["quantity"]
 
+            print("price {} quantity {}".format(price, quantity))
+
             order_item = self.place_order(
                 exchange="AAPL",
                 side=Side.BUY,
                 volume=100,
                 price=price - 1
             )
+            print(order_item.__dict__)
             self.order_ids_sent.add(order_item.order_id)
 
             order_item = self.place_order(
@@ -51,4 +56,5 @@ class BuyAndSellOneValueLessThanLastExecution(AbstractAgent):
                 volume=100,
                 price=price + 1
             )
+            print(order_item.__dict__)
             self.order_ids_sent.add(order_item.order_id)
