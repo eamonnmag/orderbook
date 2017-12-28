@@ -49,7 +49,7 @@ class ExchangeService(object):
 
         return False
 
-    def place_order(self, client_id, exchange_name, side, volume, price):
+    def place_order(self, client_id, exchange_name, side, quantity, price):
         """
         :param exchange_name:
         :param side:
@@ -57,7 +57,7 @@ class ExchangeService(object):
         :param price:
         :return:
         """
-        return self.exchanges[exchange_name].place_order(client_id, volume, price, side)
+        return self.exchanges[exchange_name].place_order(client_id, quantity, price, side)
 
     def get_orders(self, exchange_name):
         """
@@ -149,7 +149,7 @@ class Exchange(object):
     def get_transactions(self):
         return self.transactions
 
-    def place_order(self, client_id, volume, price, side):
+    def place_order(self, client_id, quantity, price, side):
         """
 
         :param volume: quantity
@@ -161,7 +161,7 @@ class Exchange(object):
         order_item = OrderItem(
             order_id=len(self.orders),  # TODO
             client_id=client_id,  # TODO
-            quantity=volume,
+            quantity=quantity,
             side=side,
             price=price,
             timestamp=datetime.now(),
@@ -171,6 +171,10 @@ class Exchange(object):
         self.add_order(order_item)
 
         self.books[side].add(order_item.order_id, order_item.timestamp, order_item.price, order_item.quantity)
+
+        if side == Side.SELL:
+            self.add_transaction(TransactionItem(order_id=client_id, side=side, quantity=quantity,
+                                                 price=price))
 
         self.execute_order()
 
