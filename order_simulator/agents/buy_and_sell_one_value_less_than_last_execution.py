@@ -34,7 +34,6 @@ class BuyAndSellOneValueLessThanLastExecution(AbstractAgent):
             if data["seller_order_id"] in self.order_ids_sent:
                 return
 
-            print("Transaction done")
             price = data["price"]
             quantity = data["quantity"]
 
