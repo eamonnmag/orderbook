@@ -3,16 +3,13 @@ from order_simulator.service.orderbook import AbstractOrderBook
 
 
 class OrderBook(AbstractOrderBook):
-
     def __init__(self):
         self.orderMapPrice = {}
         self.orderMapId = {}
 
-
     def clear(self):
         self.orderMapPrice = {}
         self.orderMapId = {}
-
 
     def add(self, orderid, timestamp, price, quantity):
 
@@ -33,9 +30,7 @@ class OrderBook(AbstractOrderBook):
 
         self.orderMapPrice[price].append(orderid)
 
-
         return True
-
 
     def updateQuantity(self, orderid, quantity):
         if orderid not in self.orderMapId:
@@ -48,7 +43,6 @@ class OrderBook(AbstractOrderBook):
 
         return True
 
-
     def update(self, orderid, timestamp, price, quantity):
         if orderid not in self.orderMapId:
             return False
@@ -56,9 +50,7 @@ class OrderBook(AbstractOrderBook):
         self.delete(orderid)
         self.add(orderid, timestamp, price, quantity)
 
-
         return True
-
 
     def delete(self, orderid):
         if orderid not in self.orderMapId:
@@ -71,7 +63,6 @@ class OrderBook(AbstractOrderBook):
             self.orderMapPrice.pop(order['price'], None)
 
         return True
-
 
     def getMinPrice(self):
         if self.orderMapPrice:
@@ -93,7 +84,6 @@ class OrderBook(AbstractOrderBook):
         orderid = self.orderMapPrice[max].pop(1)
         return self.orderMapId.pop(orderid, None)
 
-
     def peek_from_max(self):
         max = self.getMaxPrice()
         if max == 0:
@@ -101,7 +91,6 @@ class OrderBook(AbstractOrderBook):
 
         orderid = self.orderMapPrice[max][0]
         return self.orderMapId[orderid]
-
 
     def pop_from_min(self):
         min = self.getMinPrice()
@@ -111,7 +100,6 @@ class OrderBook(AbstractOrderBook):
         orderid = self.orderMapPrice[min].pop(1)
         return self.orderMapId.pop(orderid, None)
 
-
     def peek_from_min(self):
         min = self.getMinPrice()
         if min == 0:
@@ -120,13 +108,11 @@ class OrderBook(AbstractOrderBook):
         orderid = self.orderMapPrice[min][0]
         return self.orderMapId[orderid]
 
-
     def getOrdersByPrice(self):
         return self.orderMapPrice
 
     def getOrdersById(self):
         return self.orderMapId
-
 
     def getQuantity(self, price):
         if price not in self.orderMapPrice:
@@ -137,7 +123,6 @@ class OrderBook(AbstractOrderBook):
             quantity += self.orderMapId[order]['quantity']
 
         return quantity
-
 
     def getNbOrders(self, price):
         if price not in self.orderMapPrice:

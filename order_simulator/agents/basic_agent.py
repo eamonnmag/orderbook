@@ -11,4 +11,4 @@ class BasicAgent(AbstractAgent):
     def notify(self, event):
         super().notify(event)
 
-        print('notified...')
+        print('notified {}...'.format(self.client_id))

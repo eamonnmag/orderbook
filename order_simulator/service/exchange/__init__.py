@@ -177,51 +177,38 @@ class Exchange(object):
         :return:
         """
 
-        seller = self.books[Side.SELL].peek_from_max()
-        buyer = self.books[Side.BUY].peek_from_min()
+        while True:
+            seller = self.books[Side.SELL].peek_from_max()
+            buyer = self.books[Side.BUY].peek_from_min()
 
-        # First we check if there is a match
-        # This happens when we the extremes of our triangles touch.
-        # So we have a low ask and a high bid.
+            # First we check if there is a match
+            # This happens when we the extremes of our triangles touch.
+            # So we have a low ask and a high bid.
 
-        if seller and buyer:
+            if seller and buyer:
 
-            print(seller)
-            print(buyer)
+                sale_quantity = buyer.get('quantity')
+                if seller.get('quantity') < buyer.get('quantity'):
+                    sale_quantity = seller.get('quantity')
 
-            sale_quantity = buyer.get('quantity')
-            if seller.get('quantity') < buyer.get('quantity'):
-                sale_quantity = seller.get('quantity')
+                # Update Seller Quantity
+                self.books[Side.SELL].updateQuantity(seller.get('id'), seller.get('quantity') - sale_quantity)
 
-            # Update Seller Quantity
-            self.books[Side.SELL].update(seller.get('id'), seller.get('timestamp'), seller.get('price'),
-                                         seller.get('quantity') - sale_quantity)
+                # Update Buyer Quantity
+                self.add_transaction(
+                    TransactionItem(order_id=buyer.get('id'), side=Side.BUY, quantity=sale_quantity,
+                                    price=buyer.get('price')))
 
-            # Update Buyer Quantity
-            self.add_transaction(
-                TransactionItem(order_id=buyer.get('id'), side=Side.BUY, quantity=sale_quantity,
-                                price=buyer.get('price')))
+                event = Event(event_type=EventType.NEW_BUY_STATE_FOR_ONE_PRICE,
+                              payload={'price': buyer.get('price'), 'side': 'buy',
+                                       'quantity': sale_quantity})
+                self.notify_agents(event)
 
-            event = Event(event_type=EventType.NEW_BID_STATE_FOR_ONE_PRICE,
-                          payload={'price': buyer.get('price'), 'side': 'buy',
-                                   'quantity': sale_quantity})
+                left_to_buy = max(buyer.get('quantity') - sale_quantity, 0)
 
-            self.notify_agents(event)
-            left_to_buy = max(buyer.get('quantity') - sale_quantity, 0)
-
-            self.books[Side.BUY].update(buyer.get('id'), buyer.get('timestamp'), buyer.get('price'),
-                                        left_to_buy)
-
-            print('Buy Order Book')
-            print(self.books[Side.BUY])
-
-            print('Sell Order Book')
-            print(self.books[Side.SELL])
-
-            # For each executed transaction, we will create a transaction in the ledger, and
-            # tell our agents about the event that has just happened...
-
-            # self.add_transaction(TransactionItem.create_transaction_from_order(order_item))
+                self.books[Side.BUY].updateQuantity(buyer.get('id'), left_to_buy)
+            else:
+                break
 
     def notify_agents(self, event):
         """
