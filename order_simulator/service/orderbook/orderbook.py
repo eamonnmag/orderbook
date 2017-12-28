@@ -95,4 +95,21 @@ class OrderBook(AbstractOrderBook):
         return self.orderMapId
 
 
+    def getQuantity(self, price):
+        if price not in self.orderMapPrice:
+            return 0
+
+        quantity = 0
+        for order in self.orderMapPrice[price]:
+            quantity += self.orderMapPrice[price][order]['quantity']
+
+        return quantity
+
+
+    def getNbOrders(self, price):
+        if price not in self.orderMapPrice:
+            return 0
+
+        return len(self.orderMapPrice[price])
+
 # cumulative quantity per price, number of order per price

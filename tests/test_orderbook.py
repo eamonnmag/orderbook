@@ -36,3 +36,16 @@ def test_delete(ob):
     print(ob.getOrderbookByPrice())
     assert ob.getMinPrice() == 0
     assert ob.getMaxPrice() == 0
+
+
+def test_quantity(ob):
+    ob.add(1, datetime.datetime.now(), 18, 10)
+    ob.add(2, datetime.datetime.now(), 18, 10)
+    ob.add(3, datetime.datetime.now(), 18, 10)
+    ob.add(4, datetime.datetime.now(), 18, 10)
+    ob.add(5, datetime.datetime.now(), 18, 10)
+    assert ob.getQuantity(18) == 50
+
+
+def test_nborders(ob):
+    assert ob.getNbOrders(18) == 5
