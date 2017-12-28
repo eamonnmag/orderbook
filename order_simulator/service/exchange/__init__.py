@@ -172,10 +172,6 @@ class Exchange(object):
 
         self.books[side].add(order_item.order_id, order_item.timestamp, order_item.price, order_item.quantity)
 
-        if side == Side.SELL:
-            self.add_transaction(TransactionItem(order_id=client_id, side=side, quantity=quantity,
-                                                 price=price))
-
         self.execute_order()
 
         return order_item
@@ -195,7 +191,6 @@ class Exchange(object):
             # So we have a low ask and a high bid.
 
             if seller and buyer:
-
                 sale_quantity = buyer.get('quantity')
                 if seller.get('quantity') < buyer.get('quantity'):
                     sale_quantity = seller.get('quantity')
@@ -203,13 +198,25 @@ class Exchange(object):
                 # Update Seller Quantity
                 self.books[Side.SELL].updateQuantity(seller.get('id'), seller.get('quantity') - sale_quantity)
 
+                transaction_item = TransactionItem(order_id=buyer.get('id'), side=Side.BUY, quantity=sale_quantity,
+                                                   price=buyer.get('price'))
+
                 # Update Buyer Quantity
-                self.add_transaction(
-                    TransactionItem(order_id=buyer.get('id'), side=Side.BUY, quantity=sale_quantity,
-                                    price=buyer.get('price')))
+                self.add_transaction(transaction_item)
 
                 event = Event(event_type=EventType.NEW_BUY_STATE_FOR_ONE_PRICE,
-                              payload={'price': buyer.get('price'), 'side': 'buy',
+                              payload={'price': buyer.get('price'),
+                                       'side': 'buy',
+                                       'quantity': sale_quantity})
+                self.notify_agents(event)
+
+
+                # timestamp, transaction_id, price, quantity
+                event = Event(event_type=EventType.TRANSACTION_DONE,
+                              payload={'timestamp': transaction_item.timestamp,
+                                       'buyer_order_id': buyer.get('id'),
+                                       'seller_order_id': seller.get('id'),
+                                       'price': buyer.get('price'),
                                        'quantity': sale_quantity})
                 self.notify_agents(event)
 
