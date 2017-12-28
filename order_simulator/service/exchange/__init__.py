@@ -1,3 +1,5 @@
+from order_simulator.agents import Event, EventType
+from order_simulator.service.exchange.ledger_item import TransactionItem
 from order_simulator.service.orderbook import AbstractOrderBook
 
 
@@ -7,47 +9,160 @@ class ExchangeService(object):
     """
 
     def __init__(self):
-        self.observers = []
-        self.ledger = {}
-        self.order_book = AbstractOrderBook()
+        self.exchanges = {}
 
-    def register(self, agent):
+    def register_exchange(self, exchange):
         """
 
         :param agent:
         :return:
         """
-        if not (agent in self.observers):
-            self.observers.append(agent)
+        if exchange.name not in self.exchanges:
+            self.exchanges[exchange.name] = exchange
             return True
 
         return False
 
-    def notify_observers(self, event):
+    def register_agent(self, exchange_name, agent):
+        """
+
+        :param agent:
+        :return:
+        """
+        if exchange_name in self.exchanges:
+            self.exchanges[exchange_name].register_agent(agent)
+            return True
+
+        return False
+
+    def place_order(self, exchange_name, order_item):
+        """
+
+        :return:
+        """
+        self.exchanges[exchange_name].place_order(order_item)
+
+    def get_orders(self, exchange_name):
+        """
+
+        :param exchange_name:
+        :return:
+        """
+        return self.exchanges[exchange_name].orders
+
+    def get_transactions(self, exchange_name):
+        """
+
+        :param exchange_name:
+        :return:
+        """
+        return self.exchanges[exchange_name].transactions
+
+    def notify_agents(self, exchange_name, event):
         """
         :return:
         """
 
-        for observer in self.observers:
-            observer.notify(event)
+        for agent in self.exchanges[exchange_name].agents:
+            agent.notify(event)
 
         return True
 
-    def update_ledger(self, item):
+    def list_exchanges(self):
+        return list(self.exchanges.keys())
+
+    def get_exchange(self, exchange_name):
+        return self.exchanges[exchange_name]
+
+
+class Exchange(object):
+    def __init__(self, *args, **kwargs):
+        self.name = kwargs.get('name')
+
+        self.agents = []
+
+        self.orders = []
+        self.transactions = []
+
+        self.order_book = AbstractOrderBook()
+
+    def register_agent(self, agent):
         """
 
-        :param item: LedgerItem
+        :param agent:
         :return:
         """
-
-        if item:
-            if item.item_type not in self.ledger:
-                self.ledger[item.item_type] = []
-
-            self.ledger[item.item_type].append(item)
+        if agent not in self.agents:
+            self.agents.append(agent)
             return True
 
         return False
 
-    def get_ledger(self):
-        return self.ledger
+    def add_order(self, order):
+        """
+
+        :param item: OrderItem
+        :return:
+        """
+
+        if order:
+            if order not in self.orders:
+                self.orders.append(order)
+                return True
+
+        return False
+
+    def add_transaction(self, transaction):
+        """
+
+        :param item: TransactionItem
+        :return:
+        """
+
+        if transaction:
+            if transaction not in self.transactions:
+                self.transactions.append(transaction)
+                return True
+
+        return False
+
+    def get_orders(self):
+        return self.orders
+
+    def get_transactions(self):
+        return self.transactions
+
+    def place_order(self, order_item):
+        """
+
+        :param order_item:
+        :return:
+        """
+
+        self.add_order(order_item)
+
+        self.execute_order(order_item)
+
+    def execute_order(self, order_item):
+        """
+
+        :return:
+        """
+
+        # either place on the order book if
+
+        self.add_transaction(TransactionItem.create_transaction_from_order(order_item))
+
+        event = Event(event_type=EventType.NEW_BID_STATE_FOR_ONE_PRICE,
+                      payload={'price': order_item.price, 'side': order_item.side, 'volume': order_item.volume})
+        self.notify_agents(event)
+
+    def notify_agents(self, event):
+        """
+        :return:
+        """
+
+        for agent in self.agents:
+            agent.notify(event)
+
+        return True

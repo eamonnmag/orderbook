@@ -30,7 +30,7 @@ class EventType(Enum):
     # NewAskStateForOnePrice(timestamp, price, count, sum)
     NEW_ASK_STATE_FOR_ONE_PRICE = 3
     # NewBidStateForOnePrice(timestamp, price, count, sum)
-    NEW_BIN_STATE_FOR_ONE_PRICE = 4
+    NEW_BID_STATE_FOR_ONE_PRICE = 4
     # Opening
     OPENING = 5
     # SuccessfulRegistration(stock_reference)
