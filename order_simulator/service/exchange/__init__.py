@@ -189,21 +189,20 @@ class Exchange(object):
             # So we have a low ask and a high bid.
 
             if seller and buyer:
-
                 sale_quantity = buyer.get('quantity')
                 if seller.get('quantity') < buyer.get('quantity'):
                     sale_quantity = seller.get('quantity')
 
-                print('Selling at {}'.format(sale_quantity))
+                left_to_buy = max(buyer.get('quantity') - sale_quantity, 0)
 
                 # Update Seller Quantity
                 self.books[Side.SELL].updateQuantity(seller.get('id'), seller.get('quantity') - sale_quantity)
+                self.books[Side.BUY].updateQuantity(buyer.get('id'), left_to_buy)
 
                 transaction_item = TransactionItem(order_id=buyer.get('id'), side=Side.BUY, quantity=sale_quantity,
                                                    price=buyer.get('price'))
 
                 # Update Buyer Quantity
-                print(transaction_item)
                 self.add_transaction(transaction_item)
 
                 # timestamp, transaction_id, price, quantity
@@ -213,11 +212,8 @@ class Exchange(object):
                                        'seller_order_id': seller.get('id'),
                                        'price': buyer.get('price'),
                                        'quantity': sale_quantity})
+
                 self.notify_agents(event)
-
-                left_to_buy = max(buyer.get('quantity') - sale_quantity, 0)
-
-                self.books[Side.BUY].updateQuantity(buyer.get('id'), left_to_buy)
             else:
                 break
 
