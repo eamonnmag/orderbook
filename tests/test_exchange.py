@@ -67,12 +67,5 @@ def test_place_order(exchange_service):
     sell_orders = exchange_service.get_exchange('AAPL').books[Side.SELL].orderMapId
     assert (len(sell_orders) == 1)
 
-    assert (sell_orders[sell_order_2.order_id].get('quantity') == 20)
+    assert (sell_orders[sell_order_2.order_id].get('quantity') == 25)
 
-    buy_order_5 = exchange_service.place_order(client_id='basic_agent',
-                                               exchange_name="AAPL",
-                                               side=Side.BUY,
-                                               quantity=15,
-                                               price=10.2)
-
-    assert (sell_orders[sell_order_2.order_id].get('quantity') == 5)

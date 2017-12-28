@@ -195,26 +195,32 @@ class Exchange(object):
 
                 print('Selling {0} at {1}'.format(sale_quantity, seller.get('price')))
                 left_to_buy = max(buyer.get('quantity') - sale_quantity, 0)
+                if buyer.get('price') >= seller.get('price'):
+                    # Only execute the trade when there is an overlap on the prices...
 
-                # Update Seller Quantity
-                self.books[Side.SELL].updateQuantity(seller.get('id'), seller.get('quantity') - sale_quantity)
-                self.books[Side.BUY].updateQuantity(buyer.get('id'), left_to_buy)
+                    print('Selling {0} at {1}'.format(sale_quantity, seller.get('price')))
 
-                transaction_item = TransactionItem(order_id=buyer.get('id'), side=Side.BUY, quantity=sale_quantity,
-                                                   price=buyer.get('price'))
+                    # Update Seller Quantity
+                    self.books[Side.SELL].updateQuantity(seller.get('id'), seller.get('quantity') - sale_quantity)
+                    self.books[Side.BUY].updateQuantity(buyer.get('id'), left_to_buy)
 
-                # Update Buyer Quantity
-                self.add_transaction(transaction_item)
+                    transaction_item = TransactionItem(order_id=buyer.get('id'), side=Side.BUY, quantity=sale_quantity,
+                                                       price=buyer.get('price'))
 
-                # timestamp, transaction_id, price, quantity
-                event = Event(event_type=EventType.TRANSACTION_DONE,
-                              payload={'timestamp': transaction_item.timestamp,
-                                       'buyer_order_id': buyer.get('id'),
-                                       'seller_order_id': seller.get('id'),
-                                       'price': buyer.get('price'),
-                                       'quantity': sale_quantity})
+                    # Update Buyer Quantity
+                    self.add_transaction(transaction_item)
 
-                self.notify_agents(event)
+                    # timestamp, transaction_id, price, quantity
+                    event = Event(event_type=EventType.TRANSACTION_DONE,
+                                  payload={'timestamp': transaction_item.timestamp,
+                                           'buyer_order_id': buyer.get('id'),
+                                           'seller_order_id': seller.get('id'),
+                                           'price': buyer.get('price'),
+                                           'quantity': sale_quantity})
+
+                    self.notify_agents(event)
+                else:
+                    break
             else:
                 break
 
