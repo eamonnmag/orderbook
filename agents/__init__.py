@@ -1,5 +1,5 @@
 import abc
-
+from enum import Enum
 
 class AbstractAgent(object):
     @abc.abstractmethod
@@ -16,6 +16,19 @@ class AbstractAgent(object):
         @param: event - Event object containing information about what is happening on the exchange
         :return:
         """
+
+
+class EventType(Enum):
+    # TransactionDone(timestamp, transaction_id, price, quantity)
+    TRANSACTION_DONE = auto()
+    # Closing
+    CLOSING = auto()
+    # NewAskStateForOnePrice(timestamp, price, count, sum)
+    NEW_ASK_STATE_FOR_ONE_PRICE = auto()
+    # NewBidStateForOnePrice(timestamp, price, count, sum)
+    NEW_BIN_STATE_FOR_ONE_PRICE = auto()
+    # Opening
+    OPENING = auto()
 
 
 class Event(object):
