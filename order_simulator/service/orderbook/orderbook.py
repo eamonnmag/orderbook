@@ -111,5 +111,3 @@ class OrderBook(AbstractOrderBook):
             return 0
 
         return len(self.orderMapPrice[price])
-
-# cumulative quantity per price, number of order per price

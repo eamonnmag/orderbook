@@ -2,18 +2,19 @@ from datetime import datetime
 
 from order_simulator.agents import Event
 from order_simulator.agents.basic_agent import BasicAgent
-from order_simulator.service.exchange.ledger_item import LedgerItem
+from order_simulator.service.exchange.ledger_item import LedgerItem, OrderItem
 
 
-def test_register(exchange_service):
+def test_register_agent(exchange_service):
     """
     :return:
     """
 
-    agent = BasicAgent(client_id=['basic_agent'])
-    exchange_service.register(agent)
+    agent = BasicAgent(client_id='basic_agent')
 
-    assert (len(exchange_service.observers) == 1)
+    exchange_service.register_agent('AAPL', agent)
+
+    assert (len(exchange_service.get_exchange('AAPL').agents) == 1)
 
 
 def test_notify(exchange_service):
@@ -22,7 +23,7 @@ def test_notify(exchange_service):
     :return:
     """
     event = Event(event_type='buy', payload={'price': 10, 'volume': 5, 'security': 'AAPL'})
-    exchange_service.notify_observers(event)
+    exchange_service.notify_agents('AAPL', event)
 
 
 def test_add_to_ledger(exchange_service):
@@ -30,12 +31,17 @@ def test_add_to_ledger(exchange_service):
 
     :return:
     """
-    item = LedgerItem(order_id=1, item_type=LedgerItem.ORDER, client_id=1, volume=25, side='sell', price=10.2,
-                      timestamp=datetime.now(), security='AAPL')
+    item = OrderItem(order_id=1, client_id=1, volume=25, side='sell', price=10.2,
+                     timestamp=datetime.now(), security='AAPL')
 
-    exchange_service.update_ledger(item)
+    exchange_service.place_order('AAPL', item)
 
-    assert (len(exchange_service.get_ledger()) == 1)
-    assert (exchange_service.get_ledger()[LedgerItem.ORDER][0].order_id == 1)
-    assert (exchange_service.get_ledger()[LedgerItem.ORDER][0].security == 'AAPL')
+    assert (len(exchange_service.get_orders('AAPL')) == 1)
 
+
+def test_buy(exchange_service):
+    """
+
+    :param exchange_service:
+    :return:
+    """
